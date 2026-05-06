@@ -23,6 +23,17 @@ Package is available on [NuGet](https://www.nuget.org/packages/Db2Forge)
 
 ---
 
+## Why ODBC ?
+
+Db2Forge uses the **IBM i Access ODBC Driver** instead of DB2 Connect.
+
+This means:
+- ✅ No IBM DB2 Connect license required (saves hundreds/thousands €)
+- ✅ Driver is free and included with IBM i Access Client Solutions
+- ✅ Already installed in most AS/400 environments
+
+---
+
 ## Requirements
 
 - .NET Framework 4.6.2 / 4.7.2 / 4.8, .NET 8+
