@@ -1,8 +1,11 @@
 # Db2Forge
 
-> A Doctrine-inspired ORM built for DB2/AS400 and .NET. No magic, no bloat — just clean EntityManager, Repository, and Flush-based transactions over ODBC.
+> A Doctrine-inspired ORM built for DB2/AS400 and .NET Framework (4.6.2, 4.7.2 et 4.8) et .NET 8+. No magic, no bloat — just clean EntityManager, Repository, and Flush-based transactions over ODBC.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET Framework](https://img.shields.io/badge/.NET-4.6.2-orange.svg)](https://dotnet.microsoft.com/)
+[![.NET Framework](https://img.shields.io/badge/.NET-4.7.2-orange.svg)](https://dotnet.microsoft.com/)
+[![.NET Framework](https://img.shields.io/badge/.NET-4.8-green.svg)](https://dotnet.microsoft.com/)
 [![.NET](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/)
 
 ---
