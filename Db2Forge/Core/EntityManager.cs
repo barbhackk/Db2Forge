@@ -12,23 +12,45 @@ public class EntityManager(string config)
     private readonly List<string> _pendingQueries = new List<string>();
     internal readonly Dao _dao = new Dao(config);
 
+    /// <summary>
+    /// Retourne un repository pour une entité donnée
+    /// Le repository permet de faire des opérations CRUD sur l'entité
+    /// Le nom de la table est récupéré depuis l'attribut [Table] sur l'entité
+    /// Si l'attribut n'est pas présent, une exception est levée
+    /// Le repository est créé à chaque appel, il n'est pas mis en cache
+    /// </summary>
+    /// <typeparam name="T">Type de l'entité</typeparam>
+    /// <returns>Repository pour l'entité</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public Repository<T> GetRepository<T>() where T : class
     {
         var tableAttr = typeof(T).GetCustomAttribute<TableAttribute>() ?? throw new InvalidOperationException($"Pas d'attribut [Table] sur {typeof(T).Name}");
         return new Repository<T>(tableAttr.Name, this);
     }
 
+    /// <summary>
+    /// Ajoute une requête SQL à la liste des requêtes en attente de persistance
+    /// </summary>
+    /// <param name="sql">Requête SQL à ajouter</param>
     internal void AddPending(string sql)
     {
         _pendingQueries.Add(sql);
     }
 
+    /// <summary>
+    /// Persiste une entité en base de données
+    /// </summary>
+    /// <param name="entity">Entité à persister</param>
     public void Persist(object entity)
     {
         var sql = BuildInsertQuery(entity);
         AddPending(sql);
     }
 
+    /// <summary>
+    /// Exécute toutes les requêtes en attente de persistance
+    /// </summary>
+    /// <exception cref="Exception">Erreur lors de l'exécution des requêtes</exception>
     public void Flush()
     {
         using var tx = _dao.BeginTransaction();
@@ -50,18 +72,36 @@ public class EntityManager(string config)
 
     }
 
+    /// <summary>
+    /// Supprime une entité de la base de données
+    /// </summary>
+    /// <param name="entity">Entité à supprimer</param>
     public void Remove(object entity)
     {
         var sql = BuildDeleteQuery(entity);
         AddPending(sql);
     }
 
+    /// <summary>
+    /// Met à jour une entité dans la base de données
+    /// Si le critère est null, on utilise la clé primaire de l'entité 
+    /// Si le critère est fourni, on utilise les conditions du critère pour identifier l'entité à mettre à jour
+    /// Si le critère est fourni et que l'entité n'existe pas, une exception est levée
+    /// </summary>
+    /// <param name="entity">Entité à mettre à jour</param>
+    /// <param name="criteria">Critère de mise à jour (peut être null)</param>
     public void Update(object entity, Criteria? criteria = null)
     {
         var sql = BuildUpdateQuery(entity, criteria);
         AddPending(sql);
     }
 
+    /// <summary>
+    /// Construit la requête SQL pour supprimer une entité
+    /// </summary>
+    /// <param name="entity">Entité à supprimer</param>
+    /// <returns>Requête SQL</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static string BuildDeleteQuery(object entity)
     {
         var type = entity.GetType();
@@ -88,6 +128,14 @@ public class EntityManager(string config)
         return $"DELETE FROM {tableAttr.Name} WHERE {string.Join(" AND ", conditions)}";
     }
 
+    /// <summary>
+    /// Construit une requête UPDATE pour une entité donnée.
+    /// </summary>
+    /// <param name="entity">Entité à mettre à jour</param>
+    /// <param name="criteria">Critères de mise à jour</param>
+    /// <returns>Requête UPDATE</returns>
+    /// <exception cref="InvalidOperationException">Si l'entité n'a pas d'attribut [Table]</exception>
+    /// <exception cref="Exception">Si l'entité n'a pas de clé définie</exception>
     private static string BuildUpdateQuery(object entity, Criteria? criteria = null)
     {
         var type = entity.GetType();
@@ -151,6 +199,12 @@ public class EntityManager(string config)
         return $"UPDATE {tableAttr.Name} SET {string.Join(", ", setValues)} WHERE {string.Join(" AND ", conditions)}";
     }
 
+    /// <summary>
+    /// Construit une requête SQL INSERT pour une entité donnée.
+    /// </summary>
+    /// <param name="entity">L'entité à insérer.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static string BuildInsertQuery(object entity)
     {
         var type = entity.GetType();
@@ -181,6 +235,12 @@ public class EntityManager(string config)
                $"VALUES ({string.Join(", ", values)})";
     }
 
+    /// <summary>
+    /// Appelle une procédure stockée avec les paramètres fournis.
+    /// </summary>
+    /// <param name="procedureName">Nom de la procédure stockée</param>
+    /// <param name="parameters">Liste des paramètres de la procédure</param>
+    /// <returns>Dictionnaire contenant les résultats de la procédure</returns>
     public Dictionary<string, object?> CallProcedure(string procedureName, List<ProcedureParameter> parameters)
     {
         return _dao.CallProcedure(procedureName, parameters);

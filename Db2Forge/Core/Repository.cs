@@ -9,11 +9,19 @@ public class Repository<T>(string tableName, EntityManager manager) where T : cl
     private readonly string _tableName = tableName;
     private readonly EntityManager _manager = manager;
 
+    /// <summary>
+    /// Récupére le nom de la table associée au repository.
+    /// </summary>
+    /// <returns></returns>
     public string GetTableName()
     {
         return _tableName;
     }
 
+    /// <summary>
+    /// Récupère tous les enregistrements de la table associée au repository.
+    /// </summary>
+    /// <returns>Liste d'objets de type T</returns>
     public List<T> FindAll()
     {
         var sql = $"SELECT * FROM {_tableName}";
@@ -21,6 +29,11 @@ public class Repository<T>(string tableName, EntityManager manager) where T : cl
         return Mapper.MapDataSet<T>(dataset);
     }
 
+    /// <summary>
+    /// Récupère tous les enregistrements de la table associée au repository selon les critères spécifiés.
+    /// </summary>
+    /// <param name="criteria">Critères de recherche</param>
+    /// <returns>Liste d'objets de type T</returns>
     public List<T> FindBy(Criteria criteria)
     {
         var conditions = new List<string>();
@@ -36,6 +49,11 @@ public class Repository<T>(string tableName, EntityManager manager) where T : cl
         return Mapper.MapDataSet<T>(dataset);
     }
 
+    /// <summary>
+    /// Récupère un seul enregistrement de la table associée au repository selon les critères spécifiés.
+    /// </summary>
+    /// <param name="criteria">Critères de recherche</param>
+    /// <returns>Objet de type T ou null si aucun enregistrement n'est trouvé</returns>
     public T? FindOneBy(Criteria criteria)
     {
         var conditions = new List<string>();
