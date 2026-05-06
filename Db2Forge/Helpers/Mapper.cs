@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
 
-namespace ORM.Helpers;
+namespace Db2Forge.Helpers;
 
 public class Mapper
 {

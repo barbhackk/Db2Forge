@@ -1,4 +1,4 @@
-namespace ORM.For.Db2;
+namespace Db2Forge.Query;
 
 public class Criteria
     {

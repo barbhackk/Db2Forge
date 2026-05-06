@@ -1,8 +1,7 @@
-namespace ORM;
-
 using System.Data.Odbc;
 using System.Data;
-using ORM.For.Db2;
+
+namespace Db2Forge.Infrastructure;
 
 public class Dao(string connectionString)
 {

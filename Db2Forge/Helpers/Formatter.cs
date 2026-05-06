@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace ORM.Helpers;
+namespace Db2Forge.Helpers;
 
 public static class Formatter
 {

@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
-using ORM.Helpers;
+using Db2Forge.Helpers;
+using Db2Forge.Infrastructure;
+using Db2Forge.Query;
 
-namespace ORM.For.Db2;
+namespace Db2Forge.Core;
 
 public class EntityManager(string config)
 {

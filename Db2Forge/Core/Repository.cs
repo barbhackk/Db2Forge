@@ -1,6 +1,8 @@
-using ORM.Helpers;
 
-namespace ORM.For.Db2;
+using Db2Forge.Helpers;
+using Db2Forge.Query;
+
+namespace Db2Forge.Core;
 
 public class Repository<T>(string tableName, EntityManager manager) where T : class
 {

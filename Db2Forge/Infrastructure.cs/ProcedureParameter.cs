@@ -1,6 +1,6 @@
 using System.Data;
 
-namespace ORM.For.Db2;
+namespace Db2Forge.Infrastructure;
 
 public class ProcedureParameter
 {
