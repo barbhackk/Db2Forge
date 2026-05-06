@@ -5,7 +5,25 @@
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>Db2Forge</AssemblyName>
+    <RootNamespace>Db2Forge</RootNamespace>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+
+    <!-- Métadonnées NuGet -->
+    <PackageId>Db2Forge</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Sébastien Doutre</Authors>
+    <Description>A Doctrine-inspired ORM for DB2/AS400 over ODBC</Description>
+    <PackageTags>db2;as400;orm;odbc;iseries;ibm</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/barbhackk/Db2Forge</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/barbhackk/Db2Forge</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net48'">
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />

@@ -8,6 +8,8 @@
 [![.NET Framework](https://img.shields.io/badge/.NET-4.8-green.svg)](https://dotnet.microsoft.com/)
 [![.NET](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/)
 
+Package is available on [NuGet](https://www.nuget.org/packages/Db2Forge)
+
 ---
 
 ## Features
@@ -23,7 +25,7 @@
 
 ## Requirements
 
-- .NET 8+
+- .NET Framework 4.6.2 / 4.7.2 / 4.8, .NET 8+
 - IBM i Access ODBC Driver installed on the host machine
 - DB2/AS400 accessible via ODBC
 
