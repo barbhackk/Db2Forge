@@ -69,7 +69,6 @@ public class EntityManager(string config)
             _pendingQueries.Clear();
             throw new Exception("Erreur lors de l'exécution", e);
         }
-
     }
 
     /// <summary>
@@ -94,6 +93,26 @@ public class EntityManager(string config)
     {
         var sql = BuildUpdateQuery(entity, criteria);
         AddPending(sql);
+    }
+
+    /// <summary>
+    /// Execute la requête SQL et retourne un objet de type ResultSet
+    /// </summary>
+    /// <typeparam name="T">Type de l'entité</typeparam>
+    /// <param name="sql">Requête SQL</param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public ResultSet<T> ExecuteQuery<T>(string sql) where T : class
+    {
+        try
+        {
+            var result = _dao.Fetch(sql);            
+            return new ResultSet<T>(result);
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Erreur lors de l'exécution", e);
+        }        
     }
 
     /// <summary>

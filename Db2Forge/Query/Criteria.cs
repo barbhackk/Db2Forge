@@ -1,23 +1,23 @@
 namespace Db2Forge.Query;
 
 public class Criteria
+{
+    private readonly List<CriteriaEntry> _entries = new List<CriteriaEntry>();
+
+    public Criteria Add(string columnName, object value)
     {
-        private readonly List<CriteriaEntry> _entries = new List<CriteriaEntry>();
-
-        public Criteria Add(string columnName, object value)
-        {
-            _entries.Add(new CriteriaEntry { ColumnName = columnName, Value = value });
-            return this; // fluent
-        }
-
-        internal List<CriteriaEntry> GetEntries()
-        {
-            return _entries;
-        }
+        _entries.Add(new CriteriaEntry { ColumnName = columnName, Value = value });
+        return this; // fluent
     }
 
-    internal class CriteriaEntry
+    internal List<CriteriaEntry> GetEntries()
     {
-        public required string ColumnName { get; set; }
-        public required object Value { get; set; }
+        return _entries;
     }
+}
+
+internal class CriteriaEntry
+{
+    public required string ColumnName { get; set; }
+    public required object Value { get; set; }
+}
