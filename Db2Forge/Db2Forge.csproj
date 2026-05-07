@@ -7,11 +7,16 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Db2Forge</AssemblyName>
     <RootNamespace>Db2Forge</RootNamespace>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
+    <PackageIcon>icon.png</PackageIcon>
 
     <!-- Métadonnées NuGet -->
     <PackageId>Db2Forge</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>Sébastien Doutre</Authors>
     <Description>A Doctrine-inspired ORM for DB2/AS400 over ODBC</Description>
     <PackageTags>db2;as400;orm;odbc;iseries;ibm</PackageTags>
@@ -20,6 +25,13 @@
     <RepositoryUrl>https://github.com/barbhackk/Db2Forge</RepositoryUrl>
     <PackageProjectUrl>https://github.com/barbhackk/Db2Forge</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="icon.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
