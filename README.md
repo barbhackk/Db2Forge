@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="db2Forge.png" width="300" alt="Db2Forge Icon">
+  <img src="https://github.com/barbhackk/Db2Forge/blob/main/db2forge.png?raw=true" width="300" alt="Db2Forge Icon">
 </p>
 
 
