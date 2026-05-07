@@ -1,12 +1,16 @@
-# Db2Forge
+<p align="center">
+  <img src="db2Forge.png" width="300" alt="Db2Forge Icon">
+</p>
 
-> A Doctrine-inspired ORM built for DB2/AS400 and .NET Framework (4.6.2, 4.7.2 et 4.8) et .NET 8+. No magic, no bloat — just clean EntityManager, Repository, and Flush-based transactions over ODBC.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![.NET Framework](https://img.shields.io/badge/.NET-4.6.2-orange.svg)](https://dotnet.microsoft.com/)
-[![.NET Framework](https://img.shields.io/badge/.NET-4.7.2-orange.svg)](https://dotnet.microsoft.com/)
-[![.NET Framework](https://img.shields.io/badge/.NET-4.8-green.svg)](https://dotnet.microsoft.com/)
-[![.NET](https://img.shields.io/badge/.NET-8%2B-blue.svg)](https://dotnet.microsoft.com/)
+> A Doctrine-inspired ORM built for DB2/AS400 and .NET Framework 4.6.2+ et .NET 8+. No magic, no bloat — just clean EntityManager, Repository, and Flush-based transactions over ODBC.
+
+<p align="center">
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+<img src="https://img.shields.io/badge/.NET-4.6.2+-orange.svg" alt=".NET Framework">
+<img src="https://img.shields.io/badge/.NET-8%2B-blue.svg" alt=".NET">
+<img src="https://img.shields.io/github/stars/barbhackk/Db2Forge" alt="stars">
+</p>
 
 Package is available on [NuGet](https://www.nuget.org/packages/Db2Forge)
 
@@ -36,7 +40,7 @@ This means:
 
 ## Requirements
 
-- .NET Framework 4.6.2 / 4.7.2 / 4.8, .NET 8+
+- .NET Framework 4.6+ and .NET 8+
 - IBM i Access ODBC Driver installed on the host machine
 - DB2/AS400 accessible via ODBC
 
@@ -52,7 +56,7 @@ Map your AS400 table using standard .NET Data Annotations:
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("BIB")]
+[Table("MYBIB")]
 public class MyClass
 {
     [Key]
@@ -81,10 +85,25 @@ public class MyClass
 
 ### 2. Initialize the EntityManager
 
+In configuration file (ex: web.config):
+
+```xml
+<configuration>
+	<connectionStrings>
+		...		
+	</connectionStrings>
+	<appSettings>
+		<add key="webpages:Version" value="3.0.0.0" />
+		<add key="webpages:Enabled" value="false" />
+
+		<add key="Db2ForgeConnectionString" value="Driver={IBM i Access ODBC Driver};System=MLPDEV;Uid=SIR2000;Pwd=SIR2000;DefaultLibraries=SIREDG;" />
+
+		<!-- Code de l'application -->
+		<add key="CodeApplication" value="SIR" />
+```
+
 ```csharp
-var manager = new EntityManager(
-    "Driver={IBM i Access ODBC Driver};System=SERVER_ISERIES;Uid=ADMIN;Pwd=ADMIN;DefaultLibraries=MYLIBS;"
-);
+var manager = new EntityManager(ConfigurationManager.AppSettings["Db2ForgeConnectionString"]);
 ```
 
 It is better to specify the connection string in the settings or an environment variable than to pass it directly as a parameter.
@@ -150,7 +169,12 @@ var entity = repo.FindOneBy(criteria);
 if (entity != null)
 {
     entity.CreationProfile = "DOUTRE";
-    manager.Update(entity); // Or if you want specify other conditions => manager.Update(distributor, criteria);
+    
+    // Using de [Key] property on entity
+    manager.Update(entity);
+    // Or if you want specify other conditions 
+    manager.Update(distributor, criteria);
+
     manager.Flush();
 }
 ```
@@ -158,6 +182,8 @@ if (entity != null)
 ### Delete
 
 ```csharp
+
+// Using [Key] property on your entity
 manager.Remove(entity);
 manager.Flush();
 ```
@@ -195,6 +221,42 @@ Console.WriteLine(output["LIBEL"]?.ToString());
 
 `CallProcedure` returns a `Dictionary<string, object?>` containing all `Output` and `InputOutput` parameter values.
 
+## Execute custom SQL
+
+Execute custom SQL statements with
+
+```csharp
+var entityManager = new EntityManager(ConfigurationManager.AppSettings["Db2ForgeConnectionString"]);
+
+StringBuilder strSQL = new StringBuilder();
+List<string> whereSql = new List<string>();
+
+strSQL.AppendLine("SELECT * FROM MYBIB");
+strSQL.AppendLine("LEFT JOIN YDICMP ON CDPQCD = MYBIB.FOCMUT");
+
+try
+{
+    whereSql.Add("MYBIB.FOCMUT = '" + param + "'");
+
+    if (whereSql.Count > 0)
+    {
+        strSQL.AppendLine("WHERE " + string.Join(" AND ", whereSql));
+    }
+
+    var ressultSet = entityManager.ExecuteQuery<DiffuserDetailModel>(strSQL.ToString());
+    
+    return ressultSet.FetchAssociative();
+}
+catch (System.Exception ex)
+{
+    throw ex;
+}
+```
+
+The ResultSet is typed and allows retrieving data as a list of objects of the specified type with `FetchAllAssociative()` or a single object with `FetchAssociative()`.
+It is also possible to get the number of entities found with `GetCount()`.
+`GetResult()` allows accessing the raw dataset.
+
 ---
 
 ## Entity Mapping Reference
@@ -211,14 +273,18 @@ Console.WriteLine(output["LIBEL"]?.ToString());
 
 ```
 Db2Forge/
-├── EntityManager.cs       # Entry point — Persist, Flush, Update, Remove, CallProcedure
-├── Repository.cs          # FindAll, FindBy, FindOneBy
-├── Dao.cs                 # Raw ODBC layer — Fetch, ExecuteNonQuery, CallProcedure
-├── Criteria.cs            # Fluent filter builder
-├── ProcedureParameter.cs  # Input/Output parameter descriptor
-└── Helpers/
-    ├── Mapper.cs          # DataSet → typed object mapping
-    └── Formatter.cs       # SQL value formatting
+├── Core/
+    ├── EntityManager.cs       # Entry point — Persist, Flush, Update, Remove, CallProcedure
+    ├── Repository.cs          # FindAll, FindBy, FindOneBy
+├── Helpers/
+    ├── Formatter.cs           # SQL value formatting
+    ├── Mapper.cs              # DataSet → typed object mapping
+├── Infrastructure
+    ├── Dao.cs                 # Raw ODBC layer — Fetch, ExecuteNonQuery, CallProcedure
+    ├── ProcedureParameter.cs  # Input/Output parameter descriptor
+└── Query/
+    ├── Criteria.cs            # Fluent filter builder
+    └── ResultSet.cs           # ResultSet for custom query
 ```
 
 ---
